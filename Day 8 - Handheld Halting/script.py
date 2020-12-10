@@ -5,20 +5,24 @@ with open("input.txt", "r") as f:
 
 
 class GameConsole:
-    def __init__(self, boot_code: List[str]):
+    def __init__(self, boot_code: List[str], fix: bool = False):
         self.bootCode = boot_code
         self.originalBootCode = boot_code.copy()
         self.pointer = 0
         self.accumulator = 0
         self._mem = []
         self._memFix = []
+        self.fix = fix
 
     def run(self):
         while self.pointer < len(self.bootCode):
             code = self.bootCode[self.pointer]
             if self.pointer in self._mem:
-                self.tryFix()
-                continue
+                if self.fix:
+                    self.tryFix()
+                    continue
+                else:
+                    break
             else:
                 self._mem.append(self.pointer)
             self.handleCode(code)
@@ -58,4 +62,9 @@ class GameConsole:
 
 gc = GameConsole(puzzle_input)
 gc.run()
-print(gc.accumulator)
+print(f"PartOne: {gc.accumulator}")
+
+
+gc = GameConsole(puzzle_input, True)
+gc.run()
+print(f"PartTwo: {gc.accumulator}")
